@@ -25,6 +25,7 @@ import com.snippet.docketbackend.security.JwtAuthRequest;
 import com.snippet.docketbackend.security.JwtAuthResponse;
 import com.snippet.docketbackend.security.JwtTokenHelper;
 import com.snippet.docketbackend.services.UserService;
+import com.snippet.docketbackend.utils.Response;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -73,9 +74,8 @@ public class AuthController {
 	// register new user api
 
 	@PostMapping("/register")
-	public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
-		User registeredUser = this.userService.registerNewUser(user);
-		return new ResponseEntity<User>(registeredUser, HttpStatus.CREATED);
+	public Response registerUser(@Valid @RequestBody User user) {
+		return userService.registerNewUser(user);
 	}
 
 	// get loggedin user data
@@ -87,5 +87,4 @@ public class AuthController {
 		User user = this.userRepo.findByEmail(principal.getName()).get();
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
-
 }

@@ -1,21 +1,19 @@
 package com.snippet.docketbackend.services;
 
-import java.util.List;
-
 import com.snippet.docketbackend.models.User;
+import com.snippet.docketbackend.utils.Response;
 
 public interface UserService {
 
-	User registerNewUser(User user);
+	Response registerNewUser(User user);
 
-	User createUser(User user);
+	Response createUser(User user);
 
-	User updateUser(User user, Integer userId) throws Exception;
+	Response updateUser(User user, Integer userId);
 
-	User getUserById(Integer userId);
+	Response getUserById(Integer userId);
 
-	List<User> getAllUsers();
+	Response getAllUsers();
 
-	void deleteUser(Integer userId);
-
+	Response deleteUser(Integer userId);
 }
