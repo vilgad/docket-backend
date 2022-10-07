@@ -1,0 +1,8 @@
+- UserDetailsService
+The UserDetailsService interface is used to retrieve user-related data. It has one method named loadUserByUsername() which can be overridden to customize the process of finding the user.
+
+It is used by the DaoAuthenticationProvider to load details about the user during authentication.
+
+To enable HTTP Security in Spring, we need to extend the WebSecurityConfigurerAdapter to provide a default configuration in the configure(HttpSecurity http) method:
+
+- When we include spring-boot-starter-security dependency then it by default uses form based authentication
