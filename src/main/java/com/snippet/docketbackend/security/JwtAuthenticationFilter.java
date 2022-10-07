@@ -33,13 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-//		1. get token 
+		// 1. get token
 
 		String requestToken = request.getHeader("Authorization");
 		Enumeration<String> headerNames = request.getHeaderNames();
 
-		while(headerNames.hasMoreElements())
-		{
+		while (headerNames.hasMoreElements()) {
 			System.out.println(headerNames.nextElement());
 		}
 		// Bearer 2352523sdgsg
@@ -92,7 +91,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			System.out.println("username is null or context is not null");
 		}
 
-		
 		filterChain.doFilter(request, response);
 	}
 

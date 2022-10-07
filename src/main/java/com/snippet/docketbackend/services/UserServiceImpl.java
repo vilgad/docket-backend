@@ -31,9 +31,9 @@ public class UserServiceImpl implements UserService {
 
 		Optional<User> user1 = this.userRepo.findById(userId);
 
-        if (user1.isEmpty()) {
-            throw new Exception("User not found with userId: " + userId);
-        }
+		if (user1.isEmpty()) {
+			throw new Exception("User not found with userId: " + userId);
+		}
 
 		user1.get().setName(user.getName());
 		user1.get().setEmail(user.getEmail());

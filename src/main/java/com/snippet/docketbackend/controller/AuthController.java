@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snippet.docketbackend.exceptions.ApiException;
 import com.snippet.docketbackend.models.User;
 import com.snippet.docketbackend.repository.UserRepo;
+import com.snippet.docketbackend.security.JwtAuthRequest;
 import com.snippet.docketbackend.security.JwtAuthResponse;
 import com.snippet.docketbackend.security.JwtTokenHelper;
 import com.snippet.docketbackend.services.UserService;
@@ -88,4 +89,3 @@ public class AuthController {
 	}
 
 }
-
