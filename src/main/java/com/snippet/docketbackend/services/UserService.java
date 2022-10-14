@@ -16,4 +16,6 @@ public interface UserService {
 	Response getAllUsers();
 
 	Response deleteUser(Integer userId);
+
+	Response updateLinkName(String linkName, Integer uid);
 }

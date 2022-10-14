@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
 		user1.get().setName(user.getName());
 		user1.get().setEmail(user.getEmail());
 		user1.get().setPassword(user.getPassword());
+		user1.get().setLink_name(user.getLink_name());
 
 		return new Response(
 				"User updated successfully",
@@ -148,6 +149,35 @@ public class UserServiceImpl implements UserService {
 				new ResponseStatus(
 						HttpStatus.CONFLICT.value(),
 						HttpStatus.CONFLICT.getReasonPhrase()));
+	}
+
+	@Override
+	public Response updateLinkName(String linkName, Integer uid) {
+		Optional<User> user1 = this.userRepo.findById(uid);
+
+		if (user1.isEmpty()) {
+			return new Response(
+					"User does not exist",
+					new ResponseStatus(
+							HttpStatus.BAD_REQUEST.value(),
+							HttpStatus.BAD_REQUEST.getReasonPhrase()));
+		}
+
+		Optional<User> user = userRepo.findByLinkName(linkName);
+
+		if (user.isPresent()) {
+			return new Response(
+					"This link is already taken",
+					new ResponseStatus(
+							HttpStatus.BAD_REQUEST.value(),
+							HttpStatus.BAD_REQUEST.getReasonPhrase()));
+		}
+
+		return new Response(
+				"Link updated successfully",
+				new ResponseStatus(
+						HttpStatus.OK.value(),
+						HttpStatus.OK.getReasonPhrase()));
 	}
 
 }

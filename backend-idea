@@ -1,0 +1,27 @@
+- unique link for each account
+- link event_template table to user table
+- tables
+	* event_template - which will contain data of all event templates
+	* user_availability - will have working hours and days and other things of user
+	* google_meet settings 
+	
+- event_template
+	- name
+	- platform
+	- event_type
+	- description
+	- link_name
+	- event_color
+	- relation to availab table
+	- relation to google meet table
+	- isEnabled
+	
+- google_meet
+	- guestsCanInviteOthers
+	- guestsCanModify
+	- guestsCanSeeOtherGuests
+
+- availability
+	- days
+	- start_time
+	- end_time (24h format)

@@ -4,18 +4,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +43,17 @@ public class User implements UserDetails {
     private String email;
 
     private String password;
+
+    @Column(unique = true, nullable = true)
+    private String link_name;
+
+    // TODO: relation to event_template table
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<EventTemplate> eventsTemplates;
+
+    @OneToOne
+    private Availability availability;
 
     @Override
     public String getUsername() {
