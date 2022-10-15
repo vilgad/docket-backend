@@ -4,18 +4,17 @@ import com.snippet.docketbackend.models.User;
 import com.snippet.docketbackend.utils.Response;
 
 public interface UserService {
-
 	Response registerNewUser(User user);
 
 	Response createUser(User user);
 
-	Response updateUser(User user, Integer userId);
+	Response updateUser(String email, String name, String password, String linkName, Long userId);
 
-	Response getUserById(Integer userId);
+	Response getUserById(Long userId);
 
 	Response getAllUsers();
 
-	Response deleteUser(Integer userId);
+	Response deleteUser(Long userId);
 
-	Response updateLinkName(String linkName, Integer uid);
+	Response updateLinkName(String linkName, Long uid);
 }

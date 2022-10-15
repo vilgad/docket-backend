@@ -34,7 +34,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "user_name", nullable = false, length = 100)
     private String name;
@@ -45,14 +45,14 @@ public class User implements UserDetails {
     private String password;
 
     @Column(unique = true, nullable = true)
-    private String link_name;
+    private String linkName;
 
     // TODO: relation to event_template table
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<EventTemplate> eventsTemplates;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Availability availability;
 
     @Override

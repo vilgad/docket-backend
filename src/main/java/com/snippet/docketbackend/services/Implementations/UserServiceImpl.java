@@ -1,7 +1,9 @@
-package com.snippet.docketbackend.services;
+package com.snippet.docketbackend.services.Implementations;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.snippet.docketbackend.models.User;
 import com.snippet.docketbackend.repository.UserRepo;
+import com.snippet.docketbackend.services.UserService;
 import com.snippet.docketbackend.utils.Response;
 import com.snippet.docketbackend.utils.ResponseStatus;
 
@@ -43,22 +46,54 @@ public class UserServiceImpl implements UserService {
 						HttpStatus.CONFLICT.getReasonPhrase()));
 	}
 
+	@Transactional
 	@Override
-	public Response updateUser(User user, Integer userId) {
+	public Response updateUser(String email, String name, String password, String linkName, Long userId) {
 		Optional<User> user1 = this.userRepo.findById(userId);
 
 		if (user1.isEmpty()) {
 			return new Response(
 					"User does not exist",
 					new ResponseStatus(
-							HttpStatus.BAD_REQUEST.value(),
-							HttpStatus.BAD_REQUEST.getReasonPhrase()));
+							HttpStatus.NOT_FOUND.value(),
+							HttpStatus.NOT_FOUND.getReasonPhrase()));
 		}
 
-		user1.get().setName(user.getName());
-		user1.get().setEmail(user.getEmail());
-		user1.get().setPassword(user.getPassword());
-		user1.get().setLink_name(user.getLink_name());
+		if (name != null) {
+			user1.get().setName(name);
+		}
+
+		if (password != null) {
+			user1.get().setPassword(passwordEncoder.encode(password));
+		}
+
+		if (linkName != null) {
+			Optional<User> userOptional = userRepo.findByLinkName(linkName);
+
+			if (userOptional.isPresent()) {
+				return new Response(
+						"link already taken",
+						new ResponseStatus(
+								HttpStatus.BAD_REQUEST.value(),
+								HttpStatus.BAD_REQUEST.getReasonPhrase()));
+			}
+
+			user1.get().setLinkName(linkName);
+		}
+
+		if (email != null) {
+			Optional<User> userOptional = userRepo.findByEmail(email);
+
+			if (userOptional.isPresent()) {
+				return new Response(
+						"User with this email already exist",
+						new ResponseStatus(
+								HttpStatus.BAD_REQUEST.value(),
+								HttpStatus.BAD_REQUEST.getReasonPhrase()));
+			}
+
+			user1.get().setEmail(email);
+		}
 
 		return new Response(
 				"User updated successfully",
@@ -68,7 +103,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Response getUserById(Integer userId) {
+	public Response getUserById(Long userId) {
 		Optional<User> user1 = userRepo.findById(userId);
 
 		if (user1.isEmpty()) {
@@ -107,8 +142,9 @@ public class UserServiceImpl implements UserService {
 				users);
 	}
 
+	@Transactional
 	@Override
-	public Response deleteUser(Integer userId) {
+	public Response deleteUser(Long userId) {
 		Optional<User> user1 = userRepo.findById(userId);
 
 		if (user1.isEmpty()) {
@@ -151,8 +187,9 @@ public class UserServiceImpl implements UserService {
 						HttpStatus.CONFLICT.getReasonPhrase()));
 	}
 
+	@Transactional
 	@Override
-	public Response updateLinkName(String linkName, Integer uid) {
+	public Response updateLinkName(String linkName, Long uid) {
 		Optional<User> user1 = this.userRepo.findById(uid);
 
 		if (user1.isEmpty()) {
@@ -179,5 +216,4 @@ public class UserServiceImpl implements UserService {
 						HttpStatus.OK.value(),
 						HttpStatus.OK.getReasonPhrase()));
 	}
-
 }

@@ -35,14 +35,19 @@ public class UserController {
 	// PUT- update user
 
 	@PutMapping("/{userId}")
-	public Response updateUser(@Valid @RequestBody User userDto,
-			@PathVariable("userId") Integer uid) {
-		return userService.updateUser(userDto, uid);
+	public Response updateUser(
+		@RequestParam(required = false) String email,
+		@RequestParam(required = false) String name,
+		@RequestParam(required = false) String password,
+		@RequestParam(required = false) String linkName,
+		@PathVariable("userId") Long uid
+	) {
+		return userService.updateUser(email, name, password, linkName, uid);
 	}
 
 	// DELETE -delete user
 	@DeleteMapping("/{userId}")
-	public Response deleteUser(@PathVariable("userId") Integer uid) {
+	public Response deleteUser(@PathVariable("userId") Long uid) {
 		this.userService.deleteUser(uid);
 		return new Response(
 				"User with uId: " + uid + " Deleted",
@@ -64,7 +69,7 @@ public class UserController {
 
 	// GET - user get
 	@GetMapping("/{userId}")
-	public Response getSingleUser(@PathVariable Integer userId) {
+	public Response getSingleUser(@PathVariable Long userId) {
 		return new Response(
 				"User fetched Successfully",
 				new ResponseStatus(
@@ -75,7 +80,7 @@ public class UserController {
 
 	@PutMapping("/updateLinkName/{userId}")
 	public Response updateLinkName(@RequestParam String linkName,
-			@PathVariable("userId") Integer uid) {
+			@PathVariable("userId") Long uid) {
 		return userService.updateLinkName(linkName, uid);
 	}
 
