@@ -52,8 +52,8 @@ public class User implements UserDetails {
     @JsonBackReference
     private List<EventTemplate> eventsTemplates;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Availability availability;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Availability> availability;
 
     @Override
     public String getUsername() {

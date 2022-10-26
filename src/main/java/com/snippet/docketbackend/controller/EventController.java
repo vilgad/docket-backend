@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.snippet.docketbackend.models.Availability;
 import com.snippet.docketbackend.models.EventTemplate;
 import com.snippet.docketbackend.models.GoogleMeet;
+import com.snippet.docketbackend.services.AvailabilityService;
 import com.snippet.docketbackend.services.EventService;
 import com.snippet.docketbackend.utils.Response;
 
@@ -21,6 +22,8 @@ import com.snippet.docketbackend.utils.Response;
 public class EventController {
     @Autowired
     private EventService eventService;
+    @Autowired
+    private AvailabilityService availabilityService;
 
     @PostMapping(path = "/createEventTemplate")
     public Response createEventTemplate(
@@ -59,7 +62,7 @@ public class EventController {
     public Response getEventAvailabilityDetails(
             @RequestParam Long userId,
             @RequestParam Long id) {
-        return eventService.getEventAvailabilityDetails(userId, id);
+        return availabilityService.getEventAvailabilityDetails(userId, id);
     }
 
     @GetMapping(path = "/getEventGoogleMeetDetails")
@@ -70,7 +73,7 @@ public class EventController {
     @PutMapping(path = "/addAvailability")
     public Response addAvailability(@RequestBody Availability availability, @RequestParam Long userId,
             @RequestParam Long id) {
-        return eventService.addAvailability(availability, userId, id);
+        return availabilityService.addEventAvailability(availability, id, userId);
     }
 
     @PutMapping(path = "/addGoogleMeet")
@@ -94,12 +97,13 @@ public class EventController {
 
     @PutMapping(path = "/updateAvailability")
     public Response updateAvailability(
+        @RequestParam Long aId,
             @RequestParam Long userId,
             @RequestParam Long eId,
             @RequestParam(required = false) String day,
             @RequestParam(required = false) String start_time,
             @RequestParam(required = false) String end_time) {
-        return eventService.updateAvailability(userId, eId, day, start_time, end_time);
+        return availabilityService.updateEventAvailability(aId, eId, userId, day, start_time, end_time);
     }
 
     @PutMapping(path = "/updateGoogleMeet")
@@ -116,5 +120,14 @@ public class EventController {
     @DeleteMapping(path = "/deleteEventTemplate")
     public Response deleteEventTemplate(@RequestParam Long userId, @RequestParam Long id) {
         return eventService.deleteEventTemplate(userId, id);
+    }
+
+    @DeleteMapping(path = "/deleteAvailability")
+    public Response deleteAvailability(
+        @RequestParam Long aId,
+            @RequestParam Long userId,
+            @RequestParam Long eId
+     ) {
+        return availabilityService.deleteEventAvailability(aId, eId, userId);
     }
 }

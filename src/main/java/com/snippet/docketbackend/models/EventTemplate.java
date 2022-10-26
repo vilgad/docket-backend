@@ -1,11 +1,14 @@
 package com.snippet.docketbackend.models;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -23,7 +26,7 @@ public class EventTemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     private String description;
@@ -31,8 +34,8 @@ public class EventTemplate {
     @Column(nullable = false)
     private String type;
 
-    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    private User user;
+    @Column(nullable = false)
+    private String useremail;
 
     @Column(nullable = false)
     private String linkName;
@@ -43,8 +46,8 @@ public class EventTemplate {
     private Boolean isEnabled = false;
 
     // TODO: relation to availab table
-    @OneToOne(cascade = CascadeType.ALL)
-    private Availability availability;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Availability> availability;
 
     // TODO: relation to google meet table
     @OneToOne(cascade = CascadeType.ALL)

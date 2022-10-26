@@ -15,15 +15,13 @@ public interface EventService {
 
     Response getEventByLinkName(Long userId, String linkName);
 
-    Response getEventAvailabilityDetails(Long userId, Long id);
-
     Response getEventGoogleMeetDetails(Long userId, Long id);
 
     // POST Methods
     Response createEventTemplate(EventTemplate eventTemplate, Long userId);
 
     // PUT Methods
-    Response addAvailability(Availability availability, Long userId, Long id);
+//     Response addAvailability(Availability availability, Long userId, Long id);
 
     Response addGoogleMeet(GoogleMeet googleMeet, Long userId, Long id);
 
@@ -36,12 +34,12 @@ public interface EventService {
             String eventColor,
             Boolean isEnabled);
 
-    Response updateAvailability(
-            Long userId,
-            Long eId,
-            String day,
-            String start_time,
-            String end_time);
+//     Response updateAvailability(
+//             Long userId,
+//             Long eId,
+//             String day,
+//             String start_time,
+//             String end_time);
 
     Response updateGoogleMeet(
             Long userId,
