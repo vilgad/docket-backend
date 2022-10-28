@@ -1,9 +1,7 @@
 package com.snippet.docketbackend.services.Implementations;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -49,6 +47,20 @@ public class AvailabiltyServiceImpl implements AvailabilityService {
                 if (event.isEmpty()) {
                         return new Response(
                                         "NO events exist with this id",
+                                        new ResponseStatus(
+                                                        HttpStatus.BAD_REQUEST.value(),
+                                                        HttpStatus.BAD_REQUEST.getReasonPhrase()));
+                }
+
+                ArrayList<String> days = new ArrayList();
+
+                for (Availability avail : event.get().getAvailability()) {
+                        days.add(avail.getDays());
+                }
+
+                if (days.contains(availability.getDays())) {
+                        return new Response(
+                                        "This day is already booked",
                                         new ResponseStatus(
                                                         HttpStatus.BAD_REQUEST.value(),
                                                         HttpStatus.BAD_REQUEST.getReasonPhrase()));
@@ -104,7 +116,21 @@ public class AvailabiltyServiceImpl implements AvailabilityService {
                 if (event.get().getAvailability().contains(availability.get())) {
 
                         if (day != null) {
-                                availability.get().setDays(day);
+                                ArrayList<String> days = new ArrayList();
+
+                                for (Availability avail : event.get().getAvailability()) {
+                                        days.add(avail.getDays());
+                                }
+
+                                if (days.contains(day)) {
+                                        return new Response(
+                                                        "This day is already booked",
+                                                        new ResponseStatus(
+                                                                        HttpStatus.BAD_REQUEST.value(),
+                                                                        HttpStatus.BAD_REQUEST.getReasonPhrase()));
+                                } else {
+                                        availability.get().setDays(day);
+                                }
                         }
 
                         if (start_time != null) {

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.snippet.docketbackend.models.Availability;
 import com.snippet.docketbackend.models.EventTemplate;
 import com.snippet.docketbackend.models.GoogleMeet;
 import com.snippet.docketbackend.models.User;
@@ -18,7 +17,6 @@ import com.snippet.docketbackend.repository.EventRepo;
 import com.snippet.docketbackend.repository.GoogleMeetRepo;
 import com.snippet.docketbackend.repository.UserRepo;
 import com.snippet.docketbackend.services.EventService;
-import com.snippet.docketbackend.services.UserService;
 import com.snippet.docketbackend.utils.Response;
 import com.snippet.docketbackend.utils.ResponseStatus;
 
@@ -196,17 +194,21 @@ public class EventServiceImpl implements EventService {
                                                         HttpStatus.BAD_REQUEST.getReasonPhrase()));
                 }
 
-                Optional<EventTemplate> event = eventRepo.findExistence(eventTemplate.getName(), eventTemplate.getUseremail(), eventTemplate.getLinkName());
+                Optional<EventTemplate> event = eventRepo.findByName(eventTemplate.getName(),
+                                user.get().getEmail());
+
+                eventTemplate.setUseremail(user.get().getEmail());
 
                 if (event.isPresent()) {
                         return new Response(
-                                        "Template already exist",
+                                        "Template with this name already exist",
                                         new ResponseStatus(
                                                         HttpStatus.BAD_REQUEST.value(),
                                                         HttpStatus.BAD_REQUEST.getReasonPhrase()));
                 }
 
-                Optional<EventTemplate> eOptional = eventRepo.findByLinkName(eventTemplate.getLinkName(), eventTemplate.getUseremail());
+                Optional<EventTemplate> eOptional = eventRepo.findByLinkName(eventTemplate.getLinkName(),
+                                user.get().getEmail());
 
                 if (eOptional.isPresent()) {
                         return new Response(
@@ -230,37 +232,41 @@ public class EventServiceImpl implements EventService {
 
         // @Override
         // @Transactional
-        /* public Response addAvailability(Availability availability, Long userId, Long id) {
-                Optional<User> user = userRepo.findById(userId);
-
-                if (user.isEmpty()) {
-                        return new Response(
-                                        "User does not exist",
-                                        new ResponseStatus(
-                                                        HttpStatus.BAD_REQUEST.value(),
-                                                        HttpStatus.BAD_REQUEST.getReasonPhrase()));
-                }
-
-                Optional<EventTemplate> event = eventRepo.findEventById(id, user.get().getEmail());
-
-                if (event.isEmpty()) {
-                        return new Response(
-                                        "NO events exist with this id",
-                                        new ResponseStatus(
-                                                        HttpStatus.BAD_REQUEST.value(),
-                                                        HttpStatus.BAD_REQUEST.getReasonPhrase()));
-                }
-
-                availabilityRepo.save(availability);
-                event.get().getAvailability().add(availability);
-
-                return new Response(
-                                "Availability added",
-                                new ResponseStatus(
-                                                HttpStatus.OK.value(),
-                                                HttpStatus.OK.getReasonPhrase()),
-                                availability);
-        } */
+        /*
+         * public Response addAvailability(Availability availability, Long userId, Long
+         * id) {
+         * Optional<User> user = userRepo.findById(userId);
+         * 
+         * if (user.isEmpty()) {
+         * return new Response(
+         * "User does not exist",
+         * new ResponseStatus(
+         * HttpStatus.BAD_REQUEST.value(),
+         * HttpStatus.BAD_REQUEST.getReasonPhrase()));
+         * }
+         * 
+         * Optional<EventTemplate> event = eventRepo.findEventById(id,
+         * user.get().getEmail());
+         * 
+         * if (event.isEmpty()) {
+         * return new Response(
+         * "NO events exist with this id",
+         * new ResponseStatus(
+         * HttpStatus.BAD_REQUEST.value(),
+         * HttpStatus.BAD_REQUEST.getReasonPhrase()));
+         * }
+         * 
+         * availabilityRepo.save(availability);
+         * event.get().getAvailability().add(availability);
+         * 
+         * return new Response(
+         * "Availability added",
+         * new ResponseStatus(
+         * HttpStatus.OK.value(),
+         * HttpStatus.OK.getReasonPhrase()),
+         * availability);
+         * }
+         */
 
         @Transactional
         @Override
@@ -322,7 +328,19 @@ public class EventServiceImpl implements EventService {
                 }
 
                 if (name != null) {
-                        event.get().setName(name);
+                        Optional<EventTemplate> eName = eventRepo.findByName(name,
+                                        user.get().getEmail());
+
+                        if (eName.isPresent()) {
+                                return new Response(
+                                                "Template with this name already exist",
+                                                new ResponseStatus(
+                                                                HttpStatus.BAD_REQUEST.value(),
+                                                                HttpStatus.BAD_REQUEST.getReasonPhrase()));
+                        } else {
+                                event.get().setName(name);
+                        }
+
                 }
 
                 if (description != null) {
@@ -334,7 +352,18 @@ public class EventServiceImpl implements EventService {
                 }
 
                 if (linkName != null) {
-                        event.get().setLinkName(linkName);
+                        Optional<EventTemplate> eOptional = eventRepo.findByLinkName(linkName,
+                                        user.get().getEmail());
+
+                        if (eOptional.isPresent()) {
+                                return new Response(
+                                                "Template with this 'link name' already exist",
+                                                new ResponseStatus(
+                                                                HttpStatus.BAD_REQUEST.value(),
+                                                                HttpStatus.BAD_REQUEST.getReasonPhrase()));
+                        } else {
+                                event.get().setLinkName(linkName);
+                        }
                 }
 
                 if (eventColor != null) {
@@ -354,46 +383,50 @@ public class EventServiceImpl implements EventService {
 
         // @Transactional
         // @Override
-        /* public Response updateAvailability(Long userId, Long eId, String day, String start_time, String end_time) {
-                Optional<User> user = userRepo.findById(userId);
-
-                if (user.isEmpty()) {
-                        return new Response(
-                                        "User does not exist",
-                                        new ResponseStatus(
-                                                        HttpStatus.BAD_REQUEST.value(),
-                                                        HttpStatus.BAD_REQUEST.getReasonPhrase()));
-                }
-
-                Optional<EventTemplate> event = eventRepo.findEventById(eId, user.get().getEmail());
-
-                if (event.isEmpty()) {
-                        return new Response(
-                                        "NO events exist with this id",
-                                        new ResponseStatus(
-                                                        HttpStatus.BAD_REQUEST.value(),
-                                                        HttpStatus.BAD_REQUEST.getReasonPhrase()));
-
-                }
-
-                if (day != null) {
-                        event.get().getAvailability().setDays(day);
-                }
-
-                if (start_time != null) {
-                        event.get().getAvailability().setStart_time(start_time);
-                }
-
-                if (end_time != null) {
-                        event.get().getAvailability().setEnd_time(end_time);
-                }
-
-                return new Response(
-                                "Availability done",
-                                new ResponseStatus(
-                                                HttpStatus.OK.value(),
-                                                HttpStatus.OK.getReasonPhrase()));
-        } */
+        /*
+         * public Response updateAvailability(Long userId, Long eId, String day, String
+         * start_time, String end_time) {
+         * Optional<User> user = userRepo.findById(userId);
+         * 
+         * if (user.isEmpty()) {
+         * return new Response(
+         * "User does not exist",
+         * new ResponseStatus(
+         * HttpStatus.BAD_REQUEST.value(),
+         * HttpStatus.BAD_REQUEST.getReasonPhrase()));
+         * }
+         * 
+         * Optional<EventTemplate> event = eventRepo.findEventById(eId,
+         * user.get().getEmail());
+         * 
+         * if (event.isEmpty()) {
+         * return new Response(
+         * "NO events exist with this id",
+         * new ResponseStatus(
+         * HttpStatus.BAD_REQUEST.value(),
+         * HttpStatus.BAD_REQUEST.getReasonPhrase()));
+         * 
+         * }
+         * 
+         * if (day != null) {
+         * event.get().getAvailability().setDays(day);
+         * }
+         * 
+         * if (start_time != null) {
+         * event.get().getAvailability().setStart_time(start_time);
+         * }
+         * 
+         * if (end_time != null) {
+         * event.get().getAvailability().setEnd_time(end_time);
+         * }
+         * 
+         * return new Response(
+         * "Availability done",
+         * new ResponseStatus(
+         * HttpStatus.OK.value(),
+         * HttpStatus.OK.getReasonPhrase()));
+         * }
+         */
 
         @Transactional
         @Override
@@ -462,6 +495,7 @@ public class EventServiceImpl implements EventService {
                                                         HttpStatus.BAD_REQUEST.getReasonPhrase()));
                 }
 
+                user.get().getEventsTemplates().remove(event.get());
                 eventRepo.delete(event.get());
 
                 return new Response(
