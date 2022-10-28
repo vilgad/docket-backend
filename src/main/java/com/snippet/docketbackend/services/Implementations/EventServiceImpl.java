@@ -489,7 +489,7 @@ public class EventServiceImpl implements EventService {
 
                 if (event.isEmpty()) {
                         return new Response(
-                                        "NO events exist with this id",
+                                        "NO event exist with this id",
                                         new ResponseStatus(
                                                         HttpStatus.BAD_REQUEST.value(),
                                                         HttpStatus.BAD_REQUEST.getReasonPhrase()));
